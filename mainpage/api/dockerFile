@@ -20,7 +20,7 @@ RUN npm i
 # VOLUME ["/data", "/var/log/httpd"]
 
 # 하기 포트를 외부로 노출합니다.
-EXPOSE 1222
+EXPOSE 3671
 
 RUN npm install -g npm@9.6.4
 # 쉘을 사용하지 않고 컨테이너가 시작되었을 때 logbackup 스크립트를 실행
