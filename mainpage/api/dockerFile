@@ -1,0 +1,28 @@
+FROM node:latest
+
+# app 디렉토리 생성
+RUN mkdir -p /app
+
+#Docker 이미지 내부에서 RUN, CMD, ENTRYPOINT의 명령이 실행될 디렉터리를 설정합니다.
+WORKDIR /app
+
+COPY ./api/package.json /app
+COPY ./api/tsconfig.json /app
+
+RUN npm i
+
+# 현재 디렉터리에 있는 파일들을 이미지 내부 /app 디렉터리에 추가함
+#ADD     . /app
+
+# RUN apt-get update
+# RUN apt-get install apache2
+# RUN service apache2 start
+# VOLUME ["/data", "/var/log/httpd"]
+
+# 하기 포트를 외부로 노출합니다.
+EXPOSE 1222
+
+RUN npm install -g npm@9.6.4
+# 쉘을 사용하지 않고 컨테이너가 시작되었을 때 logbackup 스크립트를 실행
+#CMD ["npm", "install", "-g" ,"npm@9.6.4"]
+CMD ["npm", "install"]

@@ -1,0 +1,43 @@
+bin/
+gen/
+out/
+
+# IDE files
+.idea/
+.vscode/
+
+# Node.js files
+node_modules/
+
+# Build files
+*/dist/
+/dist/
+dist/
+
+# Dependency lock files
+yarn.lock
+package-lock.json
+
+# Environment files
+.env.local
+.env.development.local
+.env.test.local
+.env.production.local
+
+# Compiled output
+*.js
+*.d.ts
+*.map
+
+# Test files
+/__tests__/
+
+# Editor files
+*.log
+*.log.*
+
+# OS files
+.DS_Store
+Thumbs.db
+
+todo-mysql-data
