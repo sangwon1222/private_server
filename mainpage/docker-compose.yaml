@@ -3,7 +3,7 @@ services:
   mysql:
     image: mysql:latest
     volumes:
-      - ./mainpage:/var/lib/mysql
+      - ./mainpage-mysql-data:/var/lib/mysql
       - ./mainpage:/docker-entrypoint-initdb.d
     environment:
       LC_ALL: C.UTF-8
@@ -17,7 +17,7 @@ services:
     expose:
       - 3306
     ports:
-      - "3310:3306"
+      - "3673:3306"
 
   phptool:
     image: phpmyadmin/phpmyadmin
@@ -31,7 +31,7 @@ services:
       - PMA_USER=root
       - PMA_PASSWORD=1234
     ports:
-      - 1234:80
+      - 3672:80
 
   api:
     build:
@@ -47,7 +47,7 @@ services:
       NODE_ENV: "production"
       production: "docker"
     ports:
-      - "1222:1222"
+      - "3671:8000"
 # 외부 통신 허용 설정
 # networks:
 #   out-net:

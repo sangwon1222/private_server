@@ -22,14 +22,47 @@ export const getCurrentTime = async () => {
   const time = `${h < 10 ? "0" + h : h}:${m < 10 ? "0" + m : m}`;
   return `${fd} ${time}`;
 };
+
+export const getUserInfo = async (userIdx: number) => {
+  const { error, results, _fields } = await Query(`
+    SELECT idx,userId, userName,teamId FROM
+      auth
+    WHERE
+      idx='${userIdx}'
+    `);
+  const result =
+    results?.length === 1
+      ? { ok: true, result: results[0], error }
+      : { ok: false, result: [], error };
+  return result;
+};
+
 /**
- * @description Error: ER_NOT_SUPPORTED_AUTH_MODE: Client does not support authentication protocol requested by server; consider upgrading MySQL client
- * @description 발생시 대처 : https://1mini2.tistory.com/88
+ * @param id decode된 아이디
+ * @param pw decode된 비밀번호
+ * @returns -{ok: boolean, result: [], error:''}
  */
+export const checkAccount = async (id: string, pw: string) => {
+  const { error, results } = await Query(`
+    SELECT idx , userId, userName , teamId FROM
+        auth
+    WHERE
+        userId='${id}'
+      AND
+        password ='${pw}'
+    `);
+
+  const result =
+    results?.length === 1
+      ? { ok: true, result: results[0], error }
+      : { ok: false, result: [], error };
+  return result;
+};
+
 export const Query = (sqlString: string) => {
   return new Promise<any>((resolve, reject) => {
     const isDevMode = process.env.NODE_ENV == "production";
-    const host = isDevMode ? "mainpage-mysql-1" : "api.lsw.kr";
+    const host = isDevMode ? "mainpage-mysql-1" : "api/lsw.kr";
     const port = isDevMode ? 3306 : 3310;
 
     const connection = mysql.createConnection({
