@@ -34,7 +34,7 @@ app.use("/api/auth", authRouter);
 const port = 8000;
 
 app.get("/", (req: express.Request, res: express.Response) => {
-  res.send("mainpage_api");
+  res.json({ res: "mainpage_api" });
 });
 
 app.use("*", express.static("public"));
