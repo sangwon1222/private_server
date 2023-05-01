@@ -1,4 +1,5 @@
 import { Server } from "socket.io";
+import express from "express";
 // import { Grid, AStarFinder } from "pathfinding";
 import {
   TypeSetBomb,
@@ -6,10 +7,22 @@ import {
   TypePosType,
   TypeDoubleNumberObject,
 } from "./type";
+import cors = require("cors");
+const corsOptions = {
+  origin: "*",
+  credentials: true,
+};
 
-const md = mapData;
+// const md = mapData;
 // const grid = new Grid(md);
 // const finder = new AStarFinder();
+
+const app = express();
+app.use(cors(corsOptions));
+app.use(express.json());
+app.use(express.urlencoded({ extended: true }));
+
+app.use("/", express.static("public"));
 
 const io = new Server(3000, {
   cors: {
