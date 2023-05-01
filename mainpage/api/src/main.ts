@@ -22,7 +22,12 @@ app.use(cors(corsOptions));
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 
+const port = 8000;
+
 app.use("/", express.static("public"));
+app.listen(port, () => {
+  console.log(`server is listening at localhost:${port}`);
+});
 
 const io = new Server(3000, {
   cors: {
