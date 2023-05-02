@@ -1,6 +1,5 @@
 import { Server } from "socket.io";
 import express from "express";
-// import { Grid, AStarFinder } from "pathfinding";
 import {
   TypeSetBomb,
   mapData,
@@ -14,21 +13,47 @@ const corsOptions = {
   credentials: true,
 };
 
-// const md = mapData;
-// const grid = new Grid(md);
-// const finder = new AStarFinder();
+const fs = require("fs");
+const http = require("http");
+const https = require("https");
+require("dotenv/config");
+
+console.log(process.env.NODE_ENV);
 
 const app = express();
 app.use(cors(corsOptions));
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 
-const port = 8000;
-
 app.use("/", express.static("public"));
-app.listen(port, () => {
-  console.log(`server is listening at localhost:${port}`);
-});
+
+if (process.env.NODE_ENV === "production") {
+  const KEY_URL = process.env.KEY_URL;
+  const options = {
+    key: fs.readFileSync(`${KEY_URL}/privkey.pem`),
+    cert: fs.readFileSync(`${KEY_URL}/cert.pem`),
+    ca: fs.readFileSync(`${KEY_URL}/chain.pem`),
+  };
+  // https 서버를 생성합니다.
+  // key 파일 옵션과 라우팅 정보 등이 들어있는 app을 함께 넘깁니다.
+  // https 포트 번호는 443입니다.
+  https.createServer(options, app).listen(443, () => {
+    console.log(`listening at port 443`);
+  });
+
+  // set up a route to redirect http to https
+  // https://stackoverflow.com/questions/7450940/automatic-https-connection-redirect-with-node-js-express
+  http.createServer((req, res) => {
+    res.writeHead(301, {
+      Location: "https://" + req.headers["host"] + req.url,
+    });
+    res.end();
+  });
+} else {
+  app.listen(403, () => {
+    console.log(`dev --port : 403`);
+  });
+}
 
 const io = new Server(3000, {
   cors: corsOptions,
