@@ -41,6 +41,7 @@ services:
     volumes:
       - ./api/src:/app/src
       - ./api/public:/app/public
+      - /etc/letsencrypt/live/lsw.kr:/etc/letsencrypt/live/lsw.kr
 
     command: "npm test"
     environment:

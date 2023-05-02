@@ -32,6 +32,7 @@ if (process.env.NODE_ENV === "production") {
     cert: fs.readFileSync(`${KEY_URL}/cert.pem`),
     ca: fs.readFileSync(`${KEY_URL}/chain.pem`),
   };
+
   // https 서버를 생성합니다.
   // key 파일 옵션과 라우팅 정보 등이 들어있는 app을 함께 넘깁니다.
   // https 포트 번호는 443입니다.
