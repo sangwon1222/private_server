@@ -13,10 +13,10 @@ const corsOptions = {
   credentials: true,
 };
 
-const fs = require("fs");
-const http = require("http");
-const https = require("https");
-const dotenv = require("dotenv").config();
+import fs from "fs";
+import http from "http";
+import https from "https";
+import "dotenv/config";
 
 const app = express();
 app.use(cors(corsOptions));
