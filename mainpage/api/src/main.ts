@@ -16,9 +16,7 @@ const corsOptions = {
 const fs = require("fs");
 const http = require("http");
 const https = require("https");
-require("dotenv/config");
-
-console.log(process.env.NODE_ENV);
+const dotenv = require("dotenv").config();
 
 const app = express();
 app.use(cors(corsOptions));
