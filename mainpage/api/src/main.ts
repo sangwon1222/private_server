@@ -16,7 +16,6 @@ const corsOptions = {
 import fs from "fs";
 import http from "http";
 import https from "https";
-import "dotenv/config";
 
 const app = express();
 app.use(cors(corsOptions));
@@ -33,15 +32,11 @@ if (process.env.NODE_ENV === "production") {
     ca: fs.readFileSync(`${KEY_URL}/chain.pem`),
   };
 
-  // https 서버를 생성합니다.
-  // key 파일 옵션과 라우팅 정보 등이 들어있는 app을 함께 넘깁니다.
   // https 포트 번호는 443입니다.
   https.createServer(options, app).listen(443, () => {
     console.log(`listening at port 443`);
   });
 
-  // set up a route to redirect http to https
-  // https://stackoverflow.com/questions/7450940/automatic-https-connection-redirect-with-node-js-express
   http.createServer((req, res) => {
     res.writeHead(301, {
       Location: "https://" + req.headers["host"] + req.url,
