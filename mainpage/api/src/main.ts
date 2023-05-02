@@ -24,29 +24,33 @@ app.use(express.urlencoded({ extended: true }));
 
 app.use("/", express.static("public"));
 
-if (process.env.NODE_ENV === "production") {
-  const KEY_URL = process.env.KEY_URL;
-  const options = {
-    key: fs.readFileSync(`${KEY_URL}/privkey.pem`),
-    cert: fs.readFileSync(`${KEY_URL}/cert.pem`),
-    ca: fs.readFileSync(`${KEY_URL}/chain.pem`),
-  };
+try {
+  if (process.env.NODE_ENV === "production") {
+    const KEY_URL = process.env.KEY_URL;
+    const options = {
+      key: fs.readFileSync(`${KEY_URL}/privkey.pem`),
+      cert: fs.readFileSync(`${KEY_URL}/cert.pem`),
+      ca: fs.readFileSync(`${KEY_URL}/chain.pem`),
+    };
 
-  // https 포트 번호는 443입니다.
-  https.createServer(options, app).listen(443, () => {
-    console.log(`listening at port 443`);
-  });
-
-  http.createServer((req, res) => {
-    res.writeHead(301, {
-      Location: "https://" + req.headers["host"] + req.url,
+    // https 포트 번호는 443입니다.
+    https.createServer(options, app).listen(443, () => {
+      console.log(`listening at port 443`);
     });
-    res.end();
-  });
-} else {
-  app.listen(403, () => {
-    console.log(`dev --port : 403`);
-  });
+
+    http.createServer((req, res) => {
+      res.writeHead(301, {
+        Location: "https://" + req.headers["host"] + req.url,
+      });
+      res.end();
+    });
+  } else {
+    app.listen(403, () => {
+      console.log(`dev --port : 403`);
+    });
+  }
+} catch (e) {
+  console.log(e);
 }
 
 // const port = 8000;
