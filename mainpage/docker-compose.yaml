@@ -41,13 +41,13 @@ services:
     volumes:
       - ./api/src:/app/src
       - ./api/public:/app/public
-      - /etc/letsencrypt/live/lsw.kr:/etc/letsencrypt/live/lsw.kr
+      - /etc/letsencrypt/live/lsw.kr:/app/certificates
 
     command: "npm test"
     environment:
       NODE_ENV: "production"
       production: "docker"
-      KEY_URL: "/etc/letsencrypt/live/lsw.kr"
+      KEY_URL: "/app/certificates"
     ports:
       - "80:8000"
 # 외부 통신 허용 설정
