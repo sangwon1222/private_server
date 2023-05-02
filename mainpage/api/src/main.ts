@@ -10,6 +10,7 @@ import {
 import cors = require("cors");
 const corsOptions = {
   origin: "*",
+  methods: ["GET", "POST"],
   credentials: true,
 };
 
@@ -30,10 +31,7 @@ app.listen(port, () => {
 });
 
 const io = new Server(3000, {
-  cors: {
-    origin: "*",
-    credentials: true,
-  },
+  cors: corsOptions,
 });
 
 io.on("connection", async (socket) => {
