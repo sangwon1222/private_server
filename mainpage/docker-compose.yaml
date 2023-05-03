@@ -39,9 +39,11 @@ services:
       dockerfile: ./api/dockerFile
     #working_dir: /home/node/app
     volumes:
+      - /etc/letsencrypt/live/lsw.kr/privkey.pem:/app/certicates/privkey.pem
+      - /etc/letsencrypt/live/lsw.kr/cert.pem:/app/certicates/cert.pem
+      - /etc/letsencrypt/live/lsw.kr/chain.pem:/app/certicates/chain.pem
       - ./api/src:/app/src
       - ./api/public:/app/public
-      - /etc/letsencrypt/live/lsw.kr:/etc/letsencrypt/live/lsw.kr
 
     command: "npm test"
     environment:

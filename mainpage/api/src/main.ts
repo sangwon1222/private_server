@@ -14,7 +14,7 @@ const corsOptions = {
 };
 
 import fs from "fs";
-import { createServer } from "http";
+import http from "http";
 import https from "https";
 
 const app = express();
@@ -24,27 +24,20 @@ app.use(express.urlencoded({ extended: true }));
 
 app.use("/", express.static("public"));
 
-const port = 8000;
-app.listen(port, () => {
-  console.log(`port ==> ${port}`);
+const KEY_URL = "/app/certicates";
+const options = {
+  key: fs.readFileSync(`${KEY_URL}/privkey.pem`),
+  cert: fs.readFileSync(`${KEY_URL}/cert.pem`),
+  ca: fs.readFileSync(`${KEY_URL}/chain.pem`),
+};
+// https 포트 번호는 443입니다.
+https.createServer(options, app).listen(443, () => {
+  console.log(`listening at port 443`);
 });
 
-// const KEY_URL = process.env.KEY_URL ?? "/etc/letsencrypt/live/lsw.kr";
-// const options = {
-//   key: fs.readFileSync(`${KEY_URL}/privkey.pem`),
-//   cert: fs.readFileSync(`${KEY_URL}/cert.pem`),
-//   ca: fs.readFileSync(`${KEY_URL}/chain.pem`),
-// };
-// // https 포트 번호는 443입니다.
-// https.createServer(options, app).listen(443, () => {
-//   console.log(`listening at port 443`);
-// });
-const http = createServer();
-
-const io = new Server(http, {
+const io = new Server(3000, {
   cors: corsOptions,
 });
-http.listen(3000);
 
 io.on("connection", async (socket) => {
   socket.data.tileScale = 50;
