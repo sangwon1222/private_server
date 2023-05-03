@@ -37,7 +37,6 @@ services:
     build:
       context: ./
       dockerfile: ./api/dockerFile
-    #working_dir: /home/node/app
     volumes:
       - /etc/letsencrypt/live/lsw.kr/privkey.pem:/app/certicates/privkey.pem
       - /etc/letsencrypt/live/lsw.kr/cert.pem:/app/certicates/cert.pem
