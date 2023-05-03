@@ -169,4 +169,4 @@ io.on("connection", async (socket) => {
   });
 });
 
-server.listen(3000);
+io.listen(server);
