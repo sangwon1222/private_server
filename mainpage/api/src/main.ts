@@ -7,21 +7,16 @@ import {
   TypeDoubleNumberObject,
 } from "./type";
 import cors from "cors";
-
-const corsOptions = {
-  origin: "http://lsw.kr",
-  // credentials: true,
-};
-
 import fs from "fs";
 import http from "http";
 import https from "https";
 
+const corsOptions = { origin: "http://lsw.kr" };
 const app = express();
+
 app.use(cors());
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
-
 app.use("/", express.static("public"));
 
 const isProduction = process.env.NODE_ENV === "production";
@@ -35,26 +30,32 @@ if (isProduction) {
   };
   // https 포트 번호는 443입니다.
   server = https.createServer(options, app);
-  // server.listen(443, () => {
-  //   console.log(`listening at port 443`);
-  // });
+  server.listen(443, () => {
+    console.log(`listening at port 443`);
+  });
 
   http.createServer({}, app).listen(8000, () => {
     console.log(`listening at port 8000`);
   });
 } else {
   server = http.createServer({}, app);
-  // server.listen(8000, () => {
-  //   console.log(`listening at port 8000`);
-  // });
+  server.listen(8000, () => {
+    console.log(`listening at port 8000`);
+  });
 }
 
 const io = new Server(server, {
   cors: corsOptions,
 });
-server.listen(3000);
+
+io.engine.on("connection", (rawSocket) => {
+  // if you need the certificate details (it is no longer available once the handshake is completed)
+  rawSocket.peerCertificate = rawSocket.request.client.getPeerCertificate();
+});
 
 io.on("connection", async (socket) => {
+  console.log((socket.conn as any).peerCertificate);
+
   socket.data.tileScale = 50;
   socket.data.pos = [1, 1];
   socket.data.status = "wait";
@@ -167,3 +168,5 @@ io.on("connection", async (socket) => {
     });
   });
 });
+
+server.listen(3000);
