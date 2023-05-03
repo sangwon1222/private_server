@@ -34,12 +34,16 @@ const options = {
 https.createServer(options, app).listen(443, () => {
   console.log(`listening at port 443`);
 });
-http.createServer((req, res) => {
-  res.writeHead(301, {
-    Location: "https://" + req.headers["host"] + req.url,
+http
+  .createServer((req, res) => {
+    res.writeHead(301, {
+      Location: "https://" + req.headers["host"] + req.url,
+    });
+    res.end();
+  })
+  .listen(80, () => {
+    console.log(`listening at port 80`);
   });
-  res.end();
-});
 
 const io = new Server(3000, {
   cors: corsOptions,
