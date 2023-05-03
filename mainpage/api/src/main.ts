@@ -11,7 +11,9 @@ import fs from "fs";
 import http from "http";
 import https from "https";
 
-const corsOptions = { origin: "http://lsw.kr" };
+const isProduction = process.env.NODE_ENV === "production";
+const KEY_URL = process.env.KEY_URL;
+const corsOptions = { origin: isProduction ? "http://lsw.kr" : "*" };
 const app = express();
 
 app.use(cors());
@@ -19,8 +21,6 @@ app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 app.use("/", express.static("public"));
 
-const isProduction = process.env.NODE_ENV === "production";
-const KEY_URL = process.env.KEY_URL;
 let server = null;
 if (isProduction) {
   const options = {
@@ -49,27 +49,23 @@ const io = new Server(server, {
   cors: corsOptions,
 });
 
-io.engine.on("connection", (rawSocket) => {
-  // if you need the certificate details (it is no longer available once the handshake is completed)
-  rawSocket.peerCertificate = rawSocket.request.client.getPeerCertificate();
-});
-
+let roomIndex = 1;
 io.on("connection", async (socket) => {
-  console.log((socket.conn as any).peerCertificate);
-
+  socket.join(`room${roomIndex}`);
   socket.data.tileScale = 50;
   socket.data.pos = [1, 1];
   socket.data.status = "wait";
+  socket.data.server = roomIndex;
   socket.data.bombMapData = Array.from({ length: 16 }, () =>
     Array.from({ length: 24 }, () => 0)
   );
+
   const sockets = await io.fetchSockets();
 
   const userInfo = () =>
     sockets.map(({ id, data: { pos, status } }) => {
       return { socketId: id, pos, status };
     });
-
   const { pos } = socket.data;
 
   socket.emit("welcome", {
@@ -158,7 +154,13 @@ io.on("connection", async (socket) => {
     checkDeathUser();
   });
 
-  socket.on("disconnect", () => {
+  // socket.on("disconnect", () => {
+  socket.on("disconnecting", () => {
+    for (const room of socket.rooms) {
+      if (room !== socket.id) {
+        socket.to(room).emit("user has left", socket.id);
+      }
+    }
     socket.emit("leaveUser", {
       socketId: socket.id,
       clientsCount: (io.engine as any).clientsCount,
