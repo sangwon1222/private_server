@@ -10,7 +10,7 @@ import cors from "cors";
 
 const corsOptions = {
   origin: "*",
-  credentials: true,
+  // credentials: true,
 };
 
 import fs from "fs";
