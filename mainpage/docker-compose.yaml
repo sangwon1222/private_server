@@ -50,6 +50,8 @@ services:
       KEY_URL: "/etc/letsencrypt/live/lsw.kr"
     ports:
       - "80:8000"
+      - "443:443"
+      - "3000:3000"
 # 외부 통신 허용 설정
 # networks:
 #   out-net:

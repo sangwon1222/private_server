@@ -10,7 +10,7 @@ import cors from "cors";
 
 const corsOptions = {
   origin: "*",
-  // credentials: true,
+  credentials: true,
 };
 
 import fs from "fs";
@@ -18,28 +18,33 @@ import http from "http";
 import https from "https";
 
 const app = express();
-app.use(cors(corsOptions));
+app.use(cors());
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 
 app.use("/", express.static("public"));
 
-const KEY_URL = process.env.KEY_URL;
-const options = {
-  key: fs.readFileSync(`${KEY_URL}/privkey.pem`),
-  cert: fs.readFileSync(`${KEY_URL}/cert.pem`),
-  ca: fs.readFileSync(`${KEY_URL}/chain.pem`),
-};
-// https 포트 번호는 443입니다.
-https.createServer(options, app).listen(443, () => {
-  console.log(`listening at port 443`);
+const port = 8000;
+app.listen(port, () => {
+  console.log(`port ==> ${port}`);
 });
-http.createServer((req, res) => {
-  res.writeHead(301, {
-    Location: "https://" + req.headers["host"] + req.url,
-  });
-  res.end();
-});
+
+// const KEY_URL = process.env.KEY_URL ?? "/etc/letsencrypt/live/lsw.kr";
+// const options = {
+//   key: fs.readFileSync(`${KEY_URL}/privkey.pem`),
+//   cert: fs.readFileSync(`${KEY_URL}/cert.pem`),
+//   ca: fs.readFileSync(`${KEY_URL}/chain.pem`),
+// };
+// // https 포트 번호는 443입니다.
+// https.createServer(options, app).listen(443, () => {
+//   console.log(`listening at port 443`);
+// });
+// http.createServer((req, res) => {
+//   res.writeHead(301, {
+//     Location: "https://" + req.headers["host"] + req.url,
+//   });
+//   res.end();
+// });
 
 const io = new Server(3000, {
   cors: corsOptions,

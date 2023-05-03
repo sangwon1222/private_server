@@ -1,28 +1,23 @@
-FROM node:latest
+FROM node:16
+ARG USER_ID=sangwon
 
-# app 디렉토리 생성
-RUN mkdir -p /app
+USER $USER_ID
 
-#Docker 이미지 내부에서 RUN, CMD, ENTRYPOINT의 명령이 실행될 디렉터리를 설정합니다.
-WORKDIR /app
+RUN mkdir /home/$USER_ID/.npm-global
+ENV PATH=/home/$USER_ID/.npm-global/bin:$PATH
+ENV NPM_CONFIG_PREFIX=/home/$USER_ID/.npm-global
 
+RUN npm install yarn --global
+RUN mkdir -p /home/$USER_ID/app
+WORKDIR /home/$USER_ID/app
+
+COPY --chown=$USER_ID . .
 COPY ./api/package.json /app
 COPY ./api/tsconfig.json /app
 
-RUN npm i
+RUN yarn
 
-# 현재 디렉터리에 있는 파일들을 이미지 내부 /app 디렉터리에 추가함
-#ADD     . /app
+EXPOSE 3000
+ENV PORT 3000
 
-# RUN apt-get update
-# RUN apt-get install apache2
-# RUN service apache2 start
-# VOLUME ["/data", "/var/log/httpd"]
-
-# 하기 포트를 외부로 노출합니다.
-EXPOSE 3671
-
-RUN npm install -g npm@9.6.4
-# 쉘을 사용하지 않고 컨테이너가 시작되었을 때 logbackup 스크립트를 실행
-#CMD ["npm", "install", "-g" ,"npm@9.6.4"]
-CMD ["npm", "install"]
+CMD ["yarn", "test"]
