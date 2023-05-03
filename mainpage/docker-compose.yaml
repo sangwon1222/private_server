@@ -19,19 +19,19 @@ services:
     ports:
       - "3673:3306"
 
-  phptool:
-    image: phpmyadmin/phpmyadmin
-    restart: always
-    #links:
-    #  - mysql
-    environment:
-      # - PMA_ARBITRARY=1
-      - PMA_HOST=mainpage-mysql-1
-      - PMA_PORT=3306
-      - PMA_USER=root
-      - PMA_PASSWORD=1234
-    ports:
-      - 3672:80
+  # phptool:
+  #   image: phpmyadmin/phpmyadmin
+  #   restart: always
+  #   #links:
+  #   #  - mysql
+  #   environment:
+  #     # - PMA_ARBITRARY=1
+  #     - PMA_HOST=mainpage-mysql-1
+  #     - PMA_PORT=3306
+  #     - PMA_USER=root
+  #     - PMA_PASSWORD=1234
+  #   ports:
+  #     - 3672:80
 
   api:
     build:
