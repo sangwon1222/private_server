@@ -9,7 +9,7 @@ import {
 import cors from "cors";
 
 const corsOptions = {
-  origin: "*",
+  origin: "https://lsw.kr",
   // credentials: true,
 };
 
