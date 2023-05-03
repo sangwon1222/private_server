@@ -49,7 +49,7 @@ services:
     environment:
       NODE_ENV: "production"
       production: "docker"
-      KEY_URL: "/etc/letsencrypt/live/lsw.kr"
+      KEY_URL: "/app/certicates/"
     ports:
       - "80:8000"
       - "443:443"

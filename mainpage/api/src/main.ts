@@ -24,26 +24,26 @@ app.use(express.urlencoded({ extended: true }));
 
 app.use("/", express.static("public"));
 
-const KEY_URL = "/app/certicates";
-const options = {
-  key: fs.readFileSync(`${KEY_URL}/privkey.pem`),
-  cert: fs.readFileSync(`${KEY_URL}/cert.pem`),
-  ca: fs.readFileSync(`${KEY_URL}/chain.pem`),
-};
-// https 포트 번호는 443입니다.
-https.createServer(options, app).listen(443, () => {
-  console.log(`listening at port 443`);
-});
-http
-  .createServer((req, res) => {
-    res.writeHead(301, {
-      Location: "https://" + req.headers["host"] + req.url,
-    });
-    res.end();
-  })
-  .listen(80, () => {
-    console.log(`listening at port 80`);
+const isProduction = process.env.NODE_ENV;
+const KEY_URL = process.env.KEY_URL;
+if (isProduction === "production") {
+  const options = {
+    key: fs.readFileSync(`${KEY_URL}/privkey.pem`),
+    cert: fs.readFileSync(`${KEY_URL}/cert.pem`),
+    ca: fs.readFileSync(`${KEY_URL}/chain.pem`),
+  };
+  // https 포트 번호는 443입니다.
+  https.createServer(options, app).listen(443, () => {
+    console.log(`listening at port 443`);
   });
+  http.createServer({}, app).listen(8000, () => {
+    console.log(`listening at port 8000`);
+  });
+} else {
+  app.listen(8000, () => {
+    console.log(`listening at port 8000 [dev]`);
+  });
+}
 
 const io = new Server(3000, {
   cors: corsOptions,
