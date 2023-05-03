@@ -24,16 +24,18 @@ app.use(express.urlencoded({ extended: true }));
 
 app.use("/", express.static("public"));
 
-const isProduction = process.env.NODE_ENV;
+const isProduction = process.env.NODE_ENV === "production";
 const KEY_URL = process.env.KEY_URL;
-if (isProduction === "production") {
+let server = null;
+if (isProduction) {
   const options = {
     key: fs.readFileSync(`${KEY_URL}/privkey.pem`),
     cert: fs.readFileSync(`${KEY_URL}/cert.pem`),
     ca: fs.readFileSync(`${KEY_URL}/chain.pem`),
   };
   // https 포트 번호는 443입니다.
-  https.createServer(options, app).listen(443, () => {
+  server = https.createServer(options, app);
+  server.listen(443, () => {
     console.log(`listening at port 443`);
   });
 
@@ -41,14 +43,16 @@ if (isProduction === "production") {
     console.log(`listening at port 8000`);
   });
 } else {
-  http.createServer({}, app).listen(8000, () => {
+  server = http.createServer({}, app);
+  server.listen(8000, () => {
     console.log(`listening at port 8000`);
   });
 }
 
-const io = new Server(3000, {
+const io = new Server(server, {
   cors: corsOptions,
 });
+server.listen(3000);
 
 io.on("connection", async (socket) => {
   socket.data.tileScale = 50;

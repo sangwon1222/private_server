@@ -1,12 +1,13 @@
 import * as http from "http";
 import { Server } from "socket.io";
 
-export async function initSocketIOServer(app: http.Server) {
+export async function SocketIO(app: http.Server) {
+  const isProduction = process.env.NODE_ENV;
   const io = new Server(app, {
     pingTimeout: 1000,
     path: "/socket",
     cors: {
-      origin: "*", //origin: "https://localhost:8080",
+      origin: isProduction ? "https://lsw.kr" : "http://lsw.kr",
     },
   });
 
