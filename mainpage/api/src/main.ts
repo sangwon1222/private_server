@@ -27,6 +27,7 @@ if (isProduction) {
     key: fs.readFileSync(`${KEY_URL}/privkey.pem`),
     cert: fs.readFileSync(`${KEY_URL}/cert.pem`),
     ca: fs.readFileSync(`${KEY_URL}/chain.pem`),
+    requestCert: true,
   };
   // https 포트 번호는 443입니다.
   server = https.createServer(options, app);
