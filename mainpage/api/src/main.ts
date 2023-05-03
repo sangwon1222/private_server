@@ -14,7 +14,7 @@ const corsOptions = {
 };
 
 import fs from "fs";
-import http from "http";
+import { createServer } from "http";
 import https from "https";
 
 const app = express();
@@ -39,16 +39,12 @@ app.listen(port, () => {
 // https.createServer(options, app).listen(443, () => {
 //   console.log(`listening at port 443`);
 // });
-// http.createServer((req, res) => {
-//   res.writeHead(301, {
-//     Location: "https://" + req.headers["host"] + req.url,
-//   });
-//   res.end();
-// });
+const http = createServer();
 
-const io = new Server(3000, {
+const io = new Server(http, {
   cors: corsOptions,
 });
+http.listen(3000);
 
 io.on("connection", async (socket) => {
   socket.data.tileScale = 50;
