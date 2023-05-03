@@ -1315,7 +1315,7 @@ void main(void)\r
         width:${a}px; 
         height: ${l}px; 
         border-radius: 20px;
-        box-shadow:0 20px 50px rgba(255,255,255,0.2);
+        box-shadow:0 0 40px 10px rgba(255,255,255,0.1);
       `)};return Q.useEffect(()=>{e(),r(),window.addEventListener("resize",r)},[t]),jn(QD,{children:jn(JD,{ref:t})})}const QD=ox.div`
   overflow: hidden;
   display: flex;
