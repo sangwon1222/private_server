@@ -6,11 +6,11 @@ import {
   TypePosType,
   TypeDoubleNumberObject,
 } from "./type";
-import cors = require("cors");
+import cors from "cors";
+
 const corsOptions = {
   origin: "*",
-  methods: ["GET", "POST"],
-  credentials: true,
+  // credentials: true,
 };
 
 import fs from "fs";
@@ -23,40 +23,30 @@ app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 
 app.use("/", express.static("public"));
+import path from "path";
 
-try {
-  if (process.env.NODE_ENV === "production") {
-    const KEY_URL = process.env.KEY_URL;
-    const options = {
-      key: fs.readFileSync(`${KEY_URL}/privkey.pem`),
-      cert: fs.readFileSync(`${KEY_URL}/cert.pem`),
-      ca: fs.readFileSync(`${KEY_URL}/chain.pem`),
-    };
-
-    // https 포트 번호는 443입니다.
-    https.createServer(options, app).listen(443, () => {
-      console.log(`listening at port 443`);
-    });
-
-    http.createServer((req, res) => {
-      res.writeHead(301, {
-        Location: "https://" + req.headers["host"] + req.url,
-      });
-      res.end();
-    });
-  } else {
-    app.listen(403, () => {
-      console.log(`dev --port : 403`);
-    });
-  }
-} catch (e) {
-  console.log(e);
+if (process.env.NODE_ENV === "production") {
+  // const KEY_URL = process.env.KEY_URL;
+  // const options = {
+  //   key: fs.readFileSync(path.resolve(`${KEY_URL}/privkey.pem`)),
+  //   cert: fs.readFileSync(path.resolve(`${KEY_URL}/cert.pem`)),
+  //   ca: fs.readFileSync(path.resolve(`${KEY_URL}/chain.pem`)),
+  // };
+  // // https 포트 번호는 443입니다.
+  // https.createServer(options, app).listen(443, () => {
+  //   console.log(`listening at port 443`);
+  // });
+  // http.createServer((req, res) => {
+  //   res.writeHead(301, {
+  //     Location: "https://" + req.headers["host"] + req.url,
+  //   });
+  //   res.end();
+  // });
+} else {
+  app.listen(8000, () => {
+    console.log(`dev --port : 8000`);
+  });
 }
-
-// const port = 8000;
-// app.listen(port, () => {
-//   console.log(`dev --port : ${port}`);
-// });
 
 const io = new Server(3000, {
   cors: corsOptions,
@@ -78,8 +68,17 @@ io.on("connection", async (socket) => {
 
   const { pos } = socket.data;
 
-  socket.emit("welcome", { socketId: socket.id, users: userInfo(), mapData });
-  socket.broadcast.emit("incomingUser", { socketId: socket.id, pos });
+  socket.emit("welcome", {
+    socketId: socket.id,
+    users: userInfo(),
+    mapData,
+    clientsCount: (io.engine as any).clientsCount,
+  });
+  socket.broadcast.emit("incomingUser", {
+    socketId: socket.id,
+    pos,
+    clientsCount: (io.engine as any).clientsCount,
+  });
 
   socket.on("setBomb", ({ bombPos }: TypeSetBomb) => {
     socket.emit("setBomb", { socketId: socket.id, bombPos });
@@ -156,7 +155,13 @@ io.on("connection", async (socket) => {
   });
 
   socket.on("disconnect", () => {
-    socket.emit("leaveUser", { socketId: socket.id });
-    socket.broadcast.emit("leaveUser", { socketId: socket.id });
+    socket.emit("leaveUser", {
+      socketId: socket.id,
+      clientsCount: (io.engine as any).clientsCount,
+    });
+    socket.broadcast.emit("leaveUser", {
+      socketId: socket.id,
+      clientsCount: (io.engine as any).clientsCount,
+    });
   });
 });
