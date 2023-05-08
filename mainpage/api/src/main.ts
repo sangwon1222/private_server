@@ -30,16 +30,12 @@ if (isProduction) {
     requestCert: true,
   };
   // https 포트 번호는 443입니다.
-  // server = https.createServer(options, app);
-  // server.listen(443, () => {
-  //   console.log(`listening at port 443`);
-  // });
+  server = https.createServer(options, app);
+  server.listen(443, () => {
+    console.log(`listening at port 443`);
+  });
 
-  // http.createServer({}, app).listen(8000, () => {
-  //   console.log(`listening at port 8000`);
-  // });
-  server = http.createServer({}, app);
-  server.listen(8000, () => {
+  http.createServer({}, app).listen(8000, () => {
     console.log(`listening at port 8000`);
   });
 } else {
