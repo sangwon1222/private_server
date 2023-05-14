@@ -13,7 +13,7 @@ import https from "https";
 
 const isProduction = process.env.NODE_ENV === "production";
 const KEY_URL = process.env.KEY_URL;
-const corsOptions = { origin: isProduction ? "http://lsw.kr" : "*" };
+const corsOptions = { origin: isProduction ? "http://www.lsw.kr" : "*" };
 const app = express();
 
 app.use(cors());
