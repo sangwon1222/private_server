@@ -5,8 +5,8 @@ services:
     restart: always
     image: mysql:latest
     volumes:
-      - ./mainpage-mysql-data:/var/lib/mysql
-      - ./:/docker-entrypoint-initdb.d
+      - ./todo-mysql-data:/var/lib/mysql
+      - .DB_init/:/docker-entrypoint-initdb.d
     environment:
       LC_ALL: C.UTF-8
       character-set-server: utf8
@@ -20,6 +20,22 @@ services:
       - 3306
     ports:
       - "3673:3306"
+      
+  phptool:
+    image: phpmyadmin/phpmyadmin
+    restart: always
+    #links:
+    #  - mysql
+    container_name: myadmin
+    environment:
+      # - PMA_ARBITRARY=1
+      - PMA_HOST=weoffice-mysql-1
+      - PMA_PORT=3306
+      - PMA_USER=root
+      - PMA_PASSWORD=1234
+    ports:
+      - 1234:80
+
 
   api:
     build:
