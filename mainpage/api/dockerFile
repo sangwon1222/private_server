@@ -1,7 +1,7 @@
 FROM node:16
 ARG USER_ID=sonid
 
-RUN groupadd -r author && useradd -r -g author $USER_ID
+# RUN groupadd -r author && useradd -r -g author $USER_ID
 USER $USER_ID
 
 RUN cd home
