@@ -1,5 +1,5 @@
 FROM node:16
-ARG USER_ID=sangwon
+ARG USER_ID=sonid
 
 USER $USER_ID
 
