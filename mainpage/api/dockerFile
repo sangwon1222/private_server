@@ -5,8 +5,8 @@ RUN groupadd -r author && useradd -r -g author $USER_ID
 USER $USER_ID
 
 RUN mkdir ~/.npm-global
-RUN npm config set prefix '~/.npm-global'
-ENV PATH=/home/$USER_ID/.npm-global/bin:$PATH
+RUN npm config set prefix ~/.npm-global
+ENV PATH=~/.npm-global/bin:$PATH
 
 RUN npm install yarn --global
 RUN mkdir -p /home/$USER_ID/app
