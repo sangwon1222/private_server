@@ -5,7 +5,7 @@ RUN groupadd -r author && useradd -r -g author $USER_ID
 USER $USER_ID
 
 # RUN cd home
-# RUN chmod -R 666 /home/
+RUN chmod -R 666 /
 # RUN mkdir /home/$USER_ID
 
 # RUN mkdir /home/$USER_ID/.npm-global
