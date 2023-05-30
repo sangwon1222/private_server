@@ -11,8 +11,8 @@ app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 app.use( cors({origin:'*'}) )
 
-app.use("/", express.static("public"));
 app.use("/api/todo", todoRouter);
+app.use("/", express.static("public"));
 
 const isDevMode = process.env.NODE_ENV == "production";
 // const port = isDevMode ? 8000 : 1234;
