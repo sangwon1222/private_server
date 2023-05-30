@@ -11,39 +11,40 @@ import fs from "fs";
 import http from "http";
 import https from "https";
 
-const isProduction = process.env.NODE_ENV === "production";
-const KEY_URL = process.env.KEY_URL;
-const corsOptions = { origin: isProduction ? "http://www.lsw.kr" : "*" };
-const app = express();
+// const isProduction = process.env.NODE_ENV === "production";
+// const KEY_URL = process.env.KEY_URL;
+// const corsOptions = { origin: isProduction ? "http://www.lsw.kr" : "*" };
 
+const corsOptions = { origin: "*" };
+const app = express();
 app.use(cors());
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 app.use("/", express.static("public"));
 
 let server = null;
-if (isProduction) {
-  const options = {
-    key: fs.readFileSync(`${KEY_URL}/privkey.pem`),
-    cert: fs.readFileSync(`${KEY_URL}/cert.pem`),
-    ca: fs.readFileSync(`${KEY_URL}/chain.pem`),
-    requestCert: true,
-  };
-  // https 포트 번호는 443입니다.
-  server = https.createServer(options, app);
-  server.listen(443, () => {
-    console.log(`listening at port 443`);
-  });
+// if (isProduction) {
+//   const options = {
+//     key: fs.readFileSync(`${KEY_URL}/privkey.pem`),
+//     cert: fs.readFileSync(`${KEY_URL}/cert.pem`),
+//     ca: fs.readFileSync(`${KEY_URL}/chain.pem`),
+//     requestCert: true,
+//   };
+//   // https 포트 번호는 443입니다.
+//   server = https.createServer(options, app);
+//   server.listen(443, () => {
+//     console.log(`listening at port 443`);
+//   });
 
-  http.createServer({}, app).listen(8000, () => {
-    console.log(`listening at port 8000`);
-  });
-} else {
+//   http.createServer({}, app).listen(8000, () => {
+//     console.log(`listening at port 8000`);
+//   });
+// } else {
   server = http.createServer({}, app);
   server.listen(8000, () => {
     console.log(`listening at port 8000`);
   });
-}
+// }
 
 const io = new Server(server, {
   cors: corsOptions,
