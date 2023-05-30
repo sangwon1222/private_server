@@ -4,6 +4,7 @@ ARG USER_ID=sonid
 USER $USER_ID
 
 RUN mkdir ~/.npm-global
+RUN useradd sonid
 RUN npm config set prefix '~/.npm-global'
 ENV PATH=/home/$USER_ID/.npm-global/bin:$PATH
 
