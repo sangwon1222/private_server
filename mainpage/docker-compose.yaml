@@ -15,12 +15,9 @@ services:
     environment:
       NODE_ENV: "production"
       production: "docker"
-      # KEY_URL: "/app/certicates/"
     restart: always
     ports:
       - "80:8000"
-      # - "443:443"
-      # - "3000:3000"
       
 
   mysql:
@@ -43,8 +40,3 @@ services:
     ports:
       - "3673:3306"
 
-# 외부 통신 허용 설정
-# networks:
-#   out-net:
-#     driver: bridge
-#     external: true

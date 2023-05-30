@@ -24,4 +24,5 @@ RUN yarn
 EXPOSE 3000
 ENV PORT 3000
 
-CMD ["yarn", "test"]
+RUN yarn test
+# CMD ["yarn", "test"]
