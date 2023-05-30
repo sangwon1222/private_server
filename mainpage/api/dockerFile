@@ -4,7 +4,7 @@ ARG USER_ID=sangwon
 RUN groupadd -r author && useradd -r -g author $USER_ID
 USER $USER_ID
 
-RUN mkdir /home/$USER_ID
+RUN mkdir -p /home/$USER_ID
 # RUN mkdir /home/$USER_ID
 
 RUN mkdir /home/$USER_ID/.npm-global
