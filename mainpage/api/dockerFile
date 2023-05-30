@@ -4,9 +4,12 @@ ARG USER_ID=sangwon
 RUN groupadd -r author && useradd -r -g author $USER_ID
 USER $USER_ID
 
-RUN mkdir cd ~/.npm-global
-RUN npm config set prefix cd ~/.npm-global
-ENV PATH=~/.npm-global/bin:$PATH
+RUN ls
+RUN ls /home/
+RUN mkdir /home/$USER_ID
+RUN mkdir /home/$USER_ID/.npm-global
+RUN npm config set prefix /home/$USER_ID/.npm-global
+ENV PATH=/home/$USER_ID/.npm-global/bin:$PATH
 
 RUN npm install yarn --global
 RUN mkdir -p /home/$USER_ID/app
