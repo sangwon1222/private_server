@@ -4,7 +4,8 @@ ARG USER_ID=sonid
 RUN groupadd -r author && useradd -r -g author $USER_ID
 USER $USER_ID
 
-RUN cd home \ && mkdir $USER_ID
+RUN cd home
+RUN mkdir $USER_ID
 RUN chmod -R 777 /home/$USER_ID
 # RUN mkdir /home/$USER_ID
 
