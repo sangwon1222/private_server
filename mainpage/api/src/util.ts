@@ -68,7 +68,7 @@ export const Query = (sqlString: string) => {
     const connection = mysql.createConnection({
       host:'mainpage-mysql-1',
       port:3306,
-      user: "mainpage",
+      user: "todo",
       password: "1234",
       database: "auth",
       multipleStatements: true,
