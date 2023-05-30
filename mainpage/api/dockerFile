@@ -1,5 +1,5 @@
 FROM node:16
-ARG USER_ID=sonid
+ARG USER_ID=sangwon
 
 # RUN groupadd -r author && useradd -r -g author $USER_ID
 RUN useradd $USER_ID
