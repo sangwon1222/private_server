@@ -6,16 +6,21 @@ USER $USER_ID
 
 # RUN cd home
 # RUN chmod -R 666 /home/
-RUN mkdir /home/$USER_ID
-
 # RUN mkdir /home/$USER_ID
-RUN mkdir /home/$USER_ID/.npm-global
-RUN npm config set prefix /home/$USER_ID/.npm-global
-ENV PATH=/home/$USER_ID/.npm-global/bin:$PATH
+
+# RUN mkdir /home/$USER_ID/.npm-global
+# RUN npm config set prefix /home/$USER_ID/.npm-global
+# ENV PATH=/home/$USER_ID/.npm-global/bin:$PATH
+
+RUN mkdir ~/.npm-global
+RUN npm config set prefix ~/.npm-global
+ENV PATH=~/.npm-global/bin:$PATH
 
 RUN npm install yarn --global
-RUN mkdir -p /home/$USER_ID/app
-WORKDIR /home/$USER_ID/app
+RUN mkdir -p ~/app
+WORKDIR ~/app
+# RUN mkdir -p /home/$USER_ID/app
+# WORKDIR /home/$USER_ID/app
 
 COPY --chown=$USER_ID . .
 COPY ./api/package.json /app
