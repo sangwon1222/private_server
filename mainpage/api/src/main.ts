@@ -22,7 +22,12 @@ app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 app.use("/", express.static("public"));
 
-let server = null;
+const server = http.createServer({}, app);
+   server.listen(8000, () => {
+    console.log(`listening at port 8000`);
+  });
+
+// let server = null;
 // if (isProduction) {
 //   const options = {
 //     key: fs.readFileSync(`${KEY_URL}/privkey.pem`),
@@ -40,10 +45,10 @@ let server = null;
 //     console.log(`listening at port 8000`);
 //   });
 // } else {
-  server = http.createServer({}, app);
-  server.listen(8000, () => {
-    console.log(`listening at port 8000`);
-  });
+  // server = http.createServer({}, app);
+  // server.listen(8000, () => {
+  //   console.log(`listening at port 8000`);
+  // });
 // }
 
 const io = new Server(server, {
