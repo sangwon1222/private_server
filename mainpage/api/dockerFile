@@ -1,10 +1,10 @@
 FROM node:16
 ARG USER_ID=sangwon
 
+RUN groupadd -r author && useradd -r -g author $USER_ID
 USER $USER_ID
 
 RUN mkdir ~/.npm-global
-RUN useradd $USER_ID
 RUN npm config set prefix '~/.npm-global'
 ENV PATH=/home/$USER_ID/.npm-global/bin:$PATH
 
