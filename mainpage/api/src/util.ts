@@ -60,14 +60,14 @@ export const checkAccount = async (id: string, pw: string) => {
 };
 
 export const Query = (sqlString: string) => {
-  return new Promise<any>((resolve, reject) => {
+  return new Promise<any>((resolve, _reject) => {
     const isDevMode = process.env.NODE_ENV == "production";
     const host = isDevMode ? "mainpage-mysql-1" : "api/lsw.kr";
     const port = isDevMode ? 3306 : 3310;
 
     const connection = mysql.createConnection({
-      host,
-      port,
+      host:'mainpage-mysql-1',
+      port:3306,
       user: "mainpage",
       password: "1234",
       database: "auth",
