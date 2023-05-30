@@ -1,12 +1,14 @@
 FROM node:16
-ARG USER_ID=sangwon
+ARG USER_ID=sonid
 
 RUN groupadd -r author && useradd -r -g author $USER_ID
 USER $USER_ID
 
-RUN ls
-RUN ls /home/
+# RUN cd home
+RUN chmod -R 777 /home/$USER_ID/
 RUN mkdir /home/$USER_ID
+
+# RUN mkdir /home/$USER_ID
 RUN mkdir /home/$USER_ID/.npm-global
 RUN npm config set prefix /home/$USER_ID/.npm-global
 ENV PATH=/home/$USER_ID/.npm-global/bin:$PATH
