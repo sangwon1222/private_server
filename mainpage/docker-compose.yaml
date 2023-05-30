@@ -6,7 +6,7 @@ services:
     image: mysql:latest
     volumes:
       - ./mainpage-mysql-data:/var/lib/mysql
-      - ./mainpage:/docker-entrypoint-initdb.d
+      - ./:/docker-entrypoint-initdb.d
     environment:
       LC_ALL: C.UTF-8
       character-set-server: utf8
@@ -23,20 +23,20 @@ services:
 
   api:
     build:
-      context: ./api
+      context: ./
       dockerfile: ./api/dockerFile
     volumes:
       # - /etc/letsencrypt/live/lsw.kr/privkey.pem:/app/certicates/privkey.pem
       # - /etc/letsencrypt/live/lsw.kr/cert.pem:/app/certicates/cert.pem
       # - /etc/letsencrypt/live/lsw.kr/chain.pem:/app/certicates/chain.pem
-      - ./api/src:/app/src
-      - ./api/public:/app/public
+      - ./api/src:/home/sonid/app/src
+      - ./api/public:/home/sonid/app/public
     command: "npm test"
     environment:
       NODE_ENV: "production"
       production: "docker"
       # KEY_URL: "/app/certicates/"
-    restart: always
+    # restart: always
     ports:
       - "80:8000"
       # - "443:443"
