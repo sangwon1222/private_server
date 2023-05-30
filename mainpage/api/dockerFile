@@ -3,9 +3,9 @@ ARG USER_ID=sonid
 
 USER $USER_ID
 
-RUN mkdir /home/$USER_ID/.npm-global
+RUN mkdir ~/.npm-global
+RUN npm config set prefix '~/.npm-global'
 ENV PATH=/home/$USER_ID/.npm-global/bin:$PATH
-ENV NPM_CONFIG_PREFIX=/home/$USER_ID/.npm-global
 
 RUN npm install yarn --global
 RUN mkdir -p /home/$USER_ID/app
