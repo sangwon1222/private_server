@@ -1,5 +1,5 @@
 import express from "express";
-import * as mysql from "mysql";
+import * as mysql from "mysql2";
 import * as jwt from "jsonwebtoken";
 import crypto from "crypto-js";
 
@@ -83,7 +83,7 @@ export const Query = (sqlString: string) => {
 
     connection.query(
       sqlString,
-      function (error: mysql.MysqlError, results, fields) {
+      function (error: mysql.QueryError , results, fields) {
         resolve({ error, results, fields });
       }
     );
