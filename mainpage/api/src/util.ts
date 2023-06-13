@@ -83,7 +83,7 @@ export const Query = (sqlString: string) => {
 
     connection.query(
       sqlString,
-      function (error: mysql.QueryError , results, fields) {
+      function (error , results, fields) {
         resolve({ error, results, fields });
       }
     );
