@@ -1,5 +1,5 @@
 import express from "express";
-const mysql = require('mysql2');
+const mysql = require('mysql');
 import * as jwt from "jsonwebtoken";
 import crypto from "crypto-js";
 
