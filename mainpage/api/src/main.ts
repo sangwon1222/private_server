@@ -26,6 +26,38 @@ const io = new Server(server, {
   cors: corsOptions,
 });
 
+const shuffle =(ary: any[])=>{
+  const backupAry:readonly any[]= ary
+  const {length} = backupAry
+  for(let i=0;i<length;i++ ){
+    const random1 = Math.floor(Math.random()*length)
+    const random2 = Math.floor(Math.random()*length)
+    const backup1 = backupAry[random1]
+    const backup2 = backupAry[random2]
+    ary[random1] = backup2
+    ary[random2] = backup1
+  }
+  return ary
+}
+const elements = [ "fire", "water", "air", "electric", "plant"]
+
+const cardSet =(setCount: number)=>{
+  const result = []
+  for(let i=0; i<setCount;i++){
+    for(const element of elements){
+      result.push(
+        ...Array(10).fill(null).map((_v,i)=>{return {element,attack:i+1,defence:0}})
+      )
+    }
+  }
+  return result
+}
+
+const actionCards:readonly any[] = shuffle([
+  ...cardSet(4),
+  ...Array(10).fill(null).map((_v,i)=>{return {element:'all',attack:0,defence:i+1}}),
+])
+
 let roomIndex = 1;
 io.on("connection", async (socket) => {
   const sockets = await io.fetchSockets();
@@ -35,16 +67,20 @@ io.on("connection", async (socket) => {
     });
 
 
+    // ['fire', 'water', 'air', 'electric', 'plant'];
   socket.join(`room${roomIndex}`);
-  socket.data.tileScale = 50;
-  socket.data.pos = [1, 1];
-  socket.data.status = "wait";
   socket.data.server = roomIndex;
+  
+  socket.data.card=()=>actionCards;
+  console.log(socket.data.card())
 
   const { clientsCount } = (io.engine as any)
+
+
   socket.emit("welcome", {
     socketId: socket.id,
     users: userInfo(),
+    cards: socket.data.card(),
     clientsCount
   });
   socket.broadcast.emit("incomming-user", {
