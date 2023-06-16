@@ -7,7 +7,7 @@ import { todoRouter } from "./routes/todo";
 const isProduction = process.env.NODE_ENV == "production";
 
 const origin = isProduction ? 'http://lsw.kr' : '*'
-const corsOptions = { origin,  credentials: true };
+
 const app = express();
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
@@ -15,7 +15,6 @@ app.use( cors({origin}) )
 
 app.use("/api/todo", todoRouter);
 app.use("/", express.static("public"));
-
 
 const port =  8000;
 
@@ -25,7 +24,7 @@ server.listen(port, () => {
 });
 
 const io = new Server(server, {
-  cors: corsOptions,
+  cors: { origin,  credentials: true },
 });
 
 const shuffle =(ary: any[])=>{
