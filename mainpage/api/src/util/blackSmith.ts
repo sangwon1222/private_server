@@ -2,12 +2,17 @@ const elements = [ "fire", "water", "air", "electric", "plant"]
 const roomData = {}
 
 export const setRoomActionCard =(roomName: string)=>{
-  if(!roomData[roomName]) roomData[roomName] = actionCards
+  return new Promise((resolve,_reject)=>{
+    if(!roomData[roomName]) roomData[roomName] = actionCards
+    resolve(1)
+  })
 }
 
 export const getRoomActionCard =(roomName: string)=>{
-  if(!roomData[roomName]) roomData[roomName] = roomData[roomName] = actionCards
-  return roomData[roomName]
+  return new Promise((resolve,_reject)=>{
+    if(!roomData[roomName]) roomData[roomName] = actionCards
+    return resolve(roomData[roomName])
+  })
 }
 
 export const shuffle =(ary: any[])=>{

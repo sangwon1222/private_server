@@ -66,9 +66,9 @@ export class BlackSmithSocket{
         const searchUserDeck = test?.data?.cardDeck 
 
         if(roomUser.length ===2){
-          setRoomActionCard(roomName)
+          await setRoomActionCard(roomName)
           socket.data.master= true
-          socket.data.actionCard= getRoomActionCard(roomName)
+          socket.data.actionCard= await getRoomActionCard(roomName)
           socket.emit('recieve-seach-user',{
             me:socket.id,
             myDeck:socket.data.cardDeck,
@@ -89,8 +89,6 @@ export class BlackSmithSocket{
         const roomName = `room${this.mRoomIndex}`
         socket.data.roomName = roomName;
         socket.join(roomName)
-        console.log(socket.rooms)
-        // this.mRoomIndex +=1
       })
 
       socket.on("get-action-card", async ()=> {
@@ -107,15 +105,10 @@ export class BlackSmithSocket{
           i+=1
           return totalUser[i].room === roomName 
         })
-        console.log(roomUser)
         const {data} = roomUser.find((e)=> e.data.master===true)
-
         const card = data.actionCard.splice(0,5)
-        console.log(socket.id,roomName)
         
-        socket.to(roomName).emit("get-action-card", {
-          card
-        })
+        socket.to(roomName).emit("get-action-card", {card})
       })
       
     
