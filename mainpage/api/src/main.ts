@@ -7,7 +7,7 @@ import { shuffle } from "./util";
 
 const isProduction = process.env.NODE_ENV == "production";
 
-const origin = isProduction ? 'lsw.kr' : '*'
+const origin = isProduction ? 'http://lsw.kr' : '*'
 
 const app = express();
 app.use(express.json());
@@ -28,7 +28,7 @@ console.log({origin})
 console.log({credentials: isProduction})
 const io = new Server(server, {
   cors: { 
-    origin,
+    origin: isProduction ? 'http://lsw.kr:3000' : '*',
     allowedHeaders: ["my-custom-header"],
     credentials: isProduction
   },
