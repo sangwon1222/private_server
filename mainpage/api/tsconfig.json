@@ -8,9 +8,9 @@
     "resolveJsonModule": true,
     "isolatedModules": false,
     "esModuleInterop": true,
-    "lib": ["es2017", "DOM"],
+    "lib": ["es2017", "DOM"],  
     "strictNullChecks": false,
-    "allowJs": true
+    "allowJs": true,
   },
   "include": ["src", "*.ts", "src/**/*.ts"],
   "exclude": ["node_modules", "**/*.test.ts"]
