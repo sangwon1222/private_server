@@ -17,7 +17,7 @@ app.use("/api/todo", todoRouter);
 app.use("/", express.static("public"));
 
 
-const port = isProduction ?  1234: 8000;
+const port =  8000;
 
 const server = http.createServer({}, app);
 server.listen(port, () => {
