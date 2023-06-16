@@ -4,17 +4,18 @@ const cors = require("cors");
 import http from "http";
 import { todoRouter } from "./routes/todo";
 
-
-const corsOptions = { origin: "*",  credentials: true };
+const isDevMode = process.env.NODE_ENV == "production";
+const origin = isDevMode?'*':'http://lsw.kr'
+const corsOptions = { origin,  credentials: true };
 const app = express();
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
-app.use( cors({origin:'*'}) )
+app.use( cors({origin}) )
 
 app.use("/api/todo", todoRouter);
 app.use("/", express.static("public"));
 
-const isDevMode = process.env.NODE_ENV == "production";
+
 const port = isDevMode ? 8000 : 1234;
 
 const server = http.createServer({}, app);
