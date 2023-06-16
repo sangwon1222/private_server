@@ -24,6 +24,8 @@ server.listen(port, () => {
   console.log(`listening at port ${port}`);
 });
 
+console.log({origin})
+console.log({credentials: isProduction})
 const io = new Server(server, {
   cors: { 
     origin,
