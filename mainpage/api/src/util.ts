@@ -3,6 +3,20 @@ const mysql = require('mysql');
 import * as jwt from "jsonwebtoken";
 import crypto from "crypto-js";
 
+export const shuffle =(ary: any[])=>{
+  const backupAry:readonly any[]= ary
+  const {length} = backupAry
+  for(let i=0;i<length;i++ ){
+    const random1 = Math.floor(Math.random()*length)
+    const random2 = Math.floor(Math.random()*length)
+    const backup1 = backupAry[random1]
+    const backup2 = backupAry[random2]
+    ary[random1] = backup2
+    ary[random2] = backup1
+  }
+  return ary
+}
+
 export const checkToken = (token: string) => {
   return jwt.decode(token);
 };

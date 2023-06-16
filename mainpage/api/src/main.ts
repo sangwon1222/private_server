@@ -3,6 +3,7 @@ const express = require('express');
 const cors = require("cors");
 import http from "http";
 import { todoRouter } from "./routes/todo";
+import { shuffle } from "./util";
 
 const isProduction = process.env.NODE_ENV == "production";
 
@@ -11,7 +12,7 @@ const origin = isProduction ? 'http://lsw.kr' : '*'
 const app = express();
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
-app.use( cors({origin}) )
+app.use( cors({origin:'*'}) )
 
 app.use("/api/todo", todoRouter);
 app.use("/", express.static("public"));
@@ -24,22 +25,14 @@ server.listen(port, () => {
 });
 
 const io = new Server(server, {
-  cors: { origin,  credentials: true },
+  cors: { 
+    origin,
+    allowedHeaders: ["my-custom-header"],
+    credentials: isProduction
+  },
 });
 
-const shuffle =(ary: any[])=>{
-  const backupAry:readonly any[]= ary
-  const {length} = backupAry
-  for(let i=0;i<length;i++ ){
-    const random1 = Math.floor(Math.random()*length)
-    const random2 = Math.floor(Math.random()*length)
-    const backup1 = backupAry[random1]
-    const backup2 = backupAry[random2]
-    ary[random1] = backup2
-    ary[random2] = backup1
-  }
-  return ary
-}
+
 const elements = [ "fire", "water", "air", "electric", "plant"]
 
 const cardSet =(setCount: number)=>{
@@ -68,25 +61,22 @@ io.on("connection", async (socket) => {
     });
 
 
-    // ['fire', 'water', 'air', 'electric', 'plant'];
   socket.join(`room${roomIndex}`);
   socket.data.server = roomIndex;
   
   socket.data.card=()=>actionCards;
-  console.log(socket.data.card())
-
-  const { clientsCount } = (io.engine as any)
+  // const { clientsCount } = (io.engine as any)
 
 
   socket.emit("welcome", {
     socketId: socket.id,
     users: userInfo(),
     cards: socket.data.card(),
-    clientsCount
+    clientsCount:userInfo().length
   });
   socket.broadcast.emit("incomming-user", {
     socketId: socket.id,
-    clientsCount
+    clientsCount:userInfo().length
   });
 
 
