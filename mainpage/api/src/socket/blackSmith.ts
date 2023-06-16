@@ -1,5 +1,5 @@
-import { actionCards } from "../util/blackSmith";
 import { Server } from "socket.io";
+import { getRoomActionCard, setRoomActionCard } from "../util/blackSmith";
 
 const isProduction = process.env.NODE_ENV == "production";
 const origin = isProduction ? 'http://lsw.kr' : '*'
@@ -8,11 +8,13 @@ const origin = isProduction ? 'http://lsw.kr' : '*'
 export class BlackSmithSocket{
   private mSocket: Server
   private mRobyUsers:any
+  private mRoomIndex: 0
   
   constructor(http:any){
     // const { clientsCount } = (io.engine as any)
     this.mSocket = new Server(http,{cors:{ origin,credentials:isProduction}})
     this.mRobyUsers = {}
+    this.mRoomIndex = 0
   }
   
 
@@ -28,65 +30,91 @@ export class BlackSmithSocket{
       
 
       this.mRobyUsers[socket.id] = true
-      socket.data.server = 0;
-      socket.data.ready = false
-      socket.data.card=()=>actionCards;
+      socket.data.roomName = '';
     
       socket.emit("welcome", {
         socketId: socket.id,
         users: userInfo(),
-        cards: socket.data.card(),
-        clientsCount: (await userInfo()).length
-      });
-
-      socket.broadcast.emit("incomming-user", {
-        socketId: socket.id,
         clientsCount: (await userInfo()).length
       });
 
       socket.on("seach-user", async (cardDeck)=> {
         const sockets = await this.mSocket.fetchSockets();
+        const roomName = `room${this.mRoomIndex}`
         socket.data.cardDeck = cardDeck
-        socket.data.ready = true
+        socket.data.roomName = roomName
         
-        let searchUser = null
-        let searchUserDeck = null
+        socket.join(`room${this.mRoomIndex}`)
 
-        for(const {id,data} of sockets){
-          const condition = data.ready && id !== socket.id
-          if(condition) {
-            searchUser = id
-            searchUserDeck = data.cardDeck
-            break
-          }
-        }
+        const sidsAry = [...(socket.to(roomName) as any).adapter.sids]
+        const totalUser = sidsAry.map((e)=>{
+          const user = [...e[1]][0]
+          const room = [...e[1]][1]
+          return {user,room }
+        })
 
-        socket.join(`room1`)
+        const roomUser = totalUser.filter((e)=>e.room===roomName)
+        if(roomUser.length ===2 )this.mRoomIndex+=1
+
+        let i=-1
+        const test = sockets.find(() => { 
+          i+=1
+          return totalUser[i].user!= socket.id &&  totalUser[i].room === socket.data.roomName 
+        })
         
-        if(searchUser && socket.id!==searchUser){
-          socket.data.ready = false
-          
-          this.mRobyUsers[socket.id] = false
-          console.log(socket.id)
+        const searchUser = test?.id 
+        const searchUserDeck = test?.data?.cardDeck 
 
+        if(roomUser.length ===2){
+          setRoomActionCard(roomName)
+          socket.data.master= true
+          socket.data.actionCard= getRoomActionCard(roomName)
           socket.emit('recieve-seach-user',{
             me:socket.id,
             myDeck:socket.data.cardDeck,
             other:searchUser,
             otherDeck: searchUserDeck
           })
-          socket.to(`room1`).emit('recieve-seach-user',{
+          
+          socket.to(roomName).emit('recieve-seach-user',{
             me:socket.id,
             myDeck:socket.data.cardDeck,
             other:searchUser,
-            otherDeck: searchUserDeck
+            otherDeck: []
           })
         }
       });
 
+      socket.on("insert-room", async ()=> {
+        const roomName = `room${this.mRoomIndex}`
+        socket.data.roomName = roomName;
+        socket.join(roomName)
+        console.log(socket.rooms)
+        // this.mRoomIndex +=1
+      })
+
       socket.on("get-action-card", async ()=> {
-        socket.to('room1').emit("get-action-card", {
-          //
+        const sockets = await this.mSocket.fetchSockets();
+        const roomName = socket.data.roomName
+        const sidsAry = [...(socket.to(roomName) as any).adapter.sids]
+        const totalUser = sidsAry.map((e)=>{
+          const user = [...e[1]][0]
+          const room = [...e[1]][1]
+          return {user,room }
+        })
+        let i = -1
+        const roomUser = sockets.filter(()=>{
+          i+=1
+          return totalUser[i].room === roomName 
+        })
+        console.log(roomUser)
+        const {data} = roomUser.find((e)=> e.data.master===true)
+
+        const card = data.actionCard.splice(0,5)
+        console.log(socket.id,roomName)
+        
+        socket.to(roomName).emit("get-action-card", {
+          card
         })
       })
       
@@ -106,11 +134,13 @@ export class BlackSmithSocket{
       });
 
       socket.on("disconnect", async () => {
+        socket.leave(socket.data.roomName)
         for (const room of socket.rooms) {
           if (room !== socket.id) {
             socket.to(room).emit("leave-user", socket.id);
           }
         }
+
         socket.broadcast.emit("leave-user", {
           socketId: socket.id,
           clientsCount: (await userInfo()).length

@@ -1,4 +1,14 @@
 const elements = [ "fire", "water", "air", "electric", "plant"]
+const roomData = {}
+
+export const setRoomActionCard =(roomName: string)=>{
+  if(!roomData[roomName]) roomData[roomName] = actionCards
+}
+
+export const getRoomActionCard =(roomName: string)=>{
+  if(!roomData[roomName]) roomData[roomName] = roomData[roomName] = actionCards
+  return roomData[roomName]
+}
 
 export const shuffle =(ary: any[])=>{
   const backupAry:readonly any[]= ary
@@ -26,7 +36,7 @@ export const cardSet =(setCount: number)=>{
   return result
 }
 
-export const actionCards:readonly any[] = shuffle([
+export const actionCards = shuffle([
   ...cardSet(4),
   ...Array(10).fill(null).map((_v,i)=>{return {element:'all',attack:0,defence:i+1}}),
 ])
