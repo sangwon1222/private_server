@@ -29,8 +29,7 @@ console.log({credentials: isProduction})
 const io = new Server(server, {
   cors: { 
     origin: isProduction ? 'http://lsw.kr:3000' : '*',
-    allowedHeaders: ["my-custom-header"],
-    credentials: isProduction
+    credentials: false
   },
 });
 
