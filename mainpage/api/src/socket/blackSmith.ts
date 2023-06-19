@@ -66,9 +66,8 @@ export class BlackSmithSocket{
         const searchUserDeck = test?.data?.cardDeck 
 
         if(roomUser.length ===2){
-          await setRoomActionCard(roomName)
-          socket.data.master= true
           socket.data.actionCard= await getRoomActionCard(roomName)
+          socket.data.master= true
           socket.emit('recieve-seach-user',{
             me:socket.id,
             myDeck:socket.data.cardDeck,
@@ -105,10 +104,35 @@ export class BlackSmithSocket{
           i+=1
           return totalUser[i].room === roomName 
         })
-        const {data} = roomUser.find((e)=> e.data.master===true)
-        const card = data.actionCard.splice(0,5)
+        const masterSocket = roomUser.find((e)=> e.data.master===true)
+        const card = masterSocket.data.actionCard.splice(0,5)
+        console.log('id',masterSocket.id)
+        console.log('roomName',masterSocket.data.roomName)
+        console.log('actionCard',masterSocket.data.actionCard.length)
         
         socket.to(roomName).emit("get-action-card", {card})
+      })
+
+      socket.on("get-one-action-card", async ()=> {
+        const sockets = await this.mSocket.fetchSockets();
+        const roomName = socket.data.roomName
+        const sidsAry = [...(socket.to(roomName) as any).adapter.sids]
+        const totalUser = sidsAry.map((e)=>{
+          const user = [...e[1]][0]
+          const room = [...e[1]][1]
+          return {user,room }
+        })
+        let i = -1
+        const roomUser = sockets.filter(()=>{
+          i+=1
+          return totalUser[i].room === roomName 
+        })
+        const masterSocket = roomUser.find((e)=> e.data.master===true)
+        const card = masterSocket.data.actionCard.splice(0,1)
+        
+        console.log('one',card,roomName)
+
+        socket.emit("get-one-action-card", {card}) 
       })
       
     
