@@ -138,8 +138,8 @@ export class BlackSmithSocket{
         socket.emit("get-one-action-card", {card}) 
       })
       
-      socket.on("attack-card", async ({idx, attack}) => {
-        socket.to(socket.data.roomName).emit("attack-card", {idx: idx, attack: attack}) 
+      socket.on("attack-card", async ({idx, attack,enemyIdx}) => {
+        socket.to(socket.data.roomName).emit("attack-card", {idx: idx, attack: attack,enemyIdx:enemyIdx}) 
       });
     
       socket.on("leave-user", async () => {
