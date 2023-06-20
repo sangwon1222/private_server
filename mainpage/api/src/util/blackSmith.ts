@@ -40,6 +40,6 @@ export const cardSet =(setCount: number)=>{
 
 export const actionCards =()=> [
   ...cardSet(4),
-  ...Array(10).fill(null).map((_v,i)=>{return {element:'all',attack:0,defence:i+1,heal:0,actionPoint: Math.ceil(Math.random()*i+1)}}),
-  ...Array(10).fill(null).map((_v,i)=>{return {element:'all',attack:0,defence:0,heal:i+1,actionPoint: Math.ceil(Math.random()*i+1)}}),
+  ...Array(10).fill(null).map((_v,i)=>{return {element:'defence',attack:0,defence:i+1,heal:0,actionPoint: Math.ceil(Math.random()*i+1)}}),
+  ...Array(10).fill(null).map((_v,i)=>{return {element:'heal',attack:0,defence:0,heal:i+1,actionPoint: Math.ceil(Math.random()*i+1)}}),
 ]
