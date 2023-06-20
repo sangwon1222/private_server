@@ -135,7 +135,7 @@ export class BlackSmithSocket{
         
         console.log('one',card,roomName)
 
-        socket.emit("get-one-action-card", {card}) 
+        socket.emit("get-one-action-card", {card: card[0]}) 
       })
       
       socket.on("attack-card", async ({idx, attack,enemyIdx}) => {
