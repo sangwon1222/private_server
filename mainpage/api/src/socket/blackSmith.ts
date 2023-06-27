@@ -141,6 +141,12 @@ export class BlackSmithSocket{
       socket.on("attack-card", async ({idx, attack,enemyIdx}) => {
         socket.to(socket.data.roomName).emit("attack-card", {idx: idx, attack: attack,enemyIdx:enemyIdx}) 
       });
+      socket.on("use-heal-card", async ({idx, value}) => {
+        socket.to(socket.data.roomName).emit("use-heal-card", {idx: idx, value: value}) 
+      });
+      socket.on("use-defence-card", async ({idx, value}) => {
+        socket.to(socket.data.roomName).emit("use-defence-card", {idx: idx, value: value}) 
+      });
     
       socket.on("leave-user", async () => {
         const users = await userInfo()
