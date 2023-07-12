@@ -114,28 +114,32 @@ export class BlackSmithSocket{
       })
 
       socket.on("get-one-action-card", async ()=> {
-        const sockets = await this.mSocket.fetchSockets();
-        const roomName = socket.data.roomName
-        const sidsAry = [...(socket.to(roomName) as any).adapter.sids]
-        const totalUser = sidsAry.map((e)=>{
-          const user = [...e[1]][0]
-          const room = [...e[1]][1]
-          return {user,room }
-        })
+        try{
+          const sockets = await this.mSocket.fetchSockets();
+          const roomName = socket.data.roomName
+          const sidsAry = [...(socket.to(roomName) as any).adapter.sids]
+          const totalUser = sidsAry.map((e)=>{
+            const user = [...e[1]][0]
+            const room = [...e[1]][1]
+            return {user,room }
+          })
 
 
-        let i = -1
-        const roomUser = sockets.filter(()=>{
-          i+=1
-          return totalUser[i].room === roomName 
-        })
-        const masterSocket = roomUser.find((e)=> e.data.master===true)
-        
-        const card = masterSocket.data.actionCard.splice(0,1)
-        
-        console.log('one',card,roomName)
+          let i = -1
+          const roomUser = sockets.filter(()=>{
+            i+=1
+            return totalUser[i].room === roomName 
+          })
+          const masterSocket = roomUser.find((e)=> e.data.master===true)
+          
+          const card = masterSocket.data.actionCard.splice(0,1)
+          
+          console.log('one',card,roomName)
 
-        socket.emit("get-one-action-card", {card: card[0]}) 
+          socket.emit("get-one-action-card", {card: card[0]}) 
+        }catch(e){
+          console.log(e)
+        }
       })
       
       socket.on("attack-card", async ({idx, attack,enemyIdx}) => {
