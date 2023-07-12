@@ -1,4 +1,4 @@
-const elements = [ "fire", "water", "air", "electric", "plant"]
+const elements = [ "fire", "water", "air", "electric", "earth"]
 const roomData = {}
 
 export const setRoomActionCard = async (roomName: string)=>{
