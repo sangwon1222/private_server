@@ -8,7 +8,7 @@ const origin = isProduction ? 'http://lsw.kr' : '*'
 export class BlackSmithSocket{
   private mSocket: Server
   private mRobyUsers:any
-  private mRoomIndex: 0
+  private mRoomIndex: number
   
   constructor(http:any){
     // const { clientsCount } = (io.engine as any)
@@ -31,12 +31,30 @@ export class BlackSmithSocket{
 
       this.mRobyUsers[socket.id] = true
       socket.data.roomName = '';
-    
+
+      socket.data.rooms = [...(socket as any).adapter.sids]
+
       socket.emit("welcome", {
         socketId: socket.id,
         users: userInfo(),
         clientsCount: (await userInfo()).length
       });
+
+      socket.on("make-room", async ()=> {
+        socket.data.roomName = socket.id;
+        socket.join(socket.id)
+        
+        socket.to(socket.id).emit('make-room',{roomName: socket.id})
+        socket.emit('make-room',{roomName: socket.id})
+      })
+
+      socket.on("search-room", async (roomName:string)=> {
+        const search = socket.data.rooms.find(roomName)
+        
+        socket.emit('search-room',{
+          roomName: search
+        })
+      })
 
       socket.on("seach-user", async (cardDeck)=> {
         const sockets = await this.mSocket.fetchSockets();
